@@ -1,0 +1,74 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const pieces = await getCollection('writing', ({ data }) => data.status !== 'draft');
+  return pieces.map((piece) => ({
+    params: { slug: piece.id },
+    props: { piece },
+  }));
+}
+
+const { piece } = Astro.props;
+const { data } = piece;
+const { Content } = await render(piece);
+
+const publishDate = data.date.toLocaleDateString('en-US', {
+  month: 'long',
+  year: 'numeric',
+});
+const updatedDate = data.updated
+  ? data.updated.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+  : null;
+
+const canonicalURL = new URL(`/writing/${piece.id}`, Astro.site).href;
+---
+
+<Base
+  title={data.title}
+  description={data.summary}
+  canonicalURL={canonicalURL}
+  type="article"
+>
+  <a href="/writing" class="back-link" aria-label="Back to writing archive">← Writing</a>
+
+  <article>
+    <header class="article-header container--narrow">
+      <h1 class="article-header__title">{data.title}</h1>
+
+      <div class="article-header__meta">
+        <span class="article-header__type">{data.type}</span>
+        <span class="article-header__sep" aria-hidden="true">·</span>
+        <span class="article-header__date">
+          <time datetime={data.date.toISOString().slice(0, 7)}>{publishDate}</time>
+        </span>
+        {updatedDate && (
+          <>
+            <span class="article-header__sep" aria-hidden="true">·</span>
+            <span class="article-header__updated">
+              updated <time datetime={data.updated!.toISOString().slice(0, 7)}>{updatedDate}</time>
+            </span>
+          </>
+        )}
+      </div>
+
+      {(data.tags.length > 0 || (data.domain && data.domain.length > 0)) && (
+        <div class="article-header__tags" aria-label="Tags">
+          {data.tags.map((tag) => (
+            <span class="article-header__tag">{tag}</span>
+          ))}
+          {data.domain?.map((d) => (
+            <span class="article-header__tag">{d}</span>
+          ))}
+        </div>
+      )}
+
+      <p class="article-header__summary">{data.summary}</p>
+    </header>
+
+    <div class="prose container--narrow">
+      <Content />
+    </div>
+  </article>
+</Base>

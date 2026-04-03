@@ -1,0 +1,68 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import WritingListItem from '../../components/WritingListItem.astro';
+
+const allPieces = await getCollection('writing', ({ data }) => data.status !== 'draft');
+const pieces = allPieces.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// Collect all unique epistemic tags across published pieces
+const allTags = [...new Set(pieces.flatMap((p) => p.data.tags))].sort();
+---
+
+<Base
+  title="Writing"
+  description="All essays, notes, and syntheses — a flat archive sorted by date."
+>
+  <section aria-label="Writing archive">
+    <p class="section-label">Writing</p>
+
+    <div class="archive-filter" role="group" aria-label="Filter by type">
+      <span class="archive-filter__label">Filter</span>
+      <button class="filter-btn" data-filter="all" data-active="true">All</button>
+      <button class="filter-btn" data-filter="essay">Essay</button>
+      <button class="filter-btn" data-filter="note">Note</button>
+      <button class="filter-btn" data-filter="synthesis">Synthesis</button>
+    </div>
+
+    <ul class="writing-list" role="list" id="writing-list">
+      {pieces.map((piece) => (
+        <WritingListItem
+          title={piece.data.title}
+          slug={piece.id}
+          type={piece.data.type}
+          date={piece.data.date}
+          summary={piece.data.summary}
+          updated={piece.data.updated}
+        />
+      ))}
+    </ul>
+  </section>
+</Base>
+
+<script>
+  // Progressive enhancement: filter writing list by type in-place
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const items = document.querySelectorAll<HTMLLIElement>('#writing-list .writing-list__item');
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter ?? 'all';
+
+      // Update button state
+      buttons.forEach((b) => b.setAttribute('data-active', 'false'));
+      btn.setAttribute('data-active', 'true');
+
+      // Show/hide items
+      items.forEach((item) => {
+        const typeEl = item.querySelector('.writing-list__type');
+        const itemType = typeEl?.textContent?.toLowerCase().trim() ?? '';
+        if (filter === 'all' || itemType === filter) {
+          item.removeAttribute('hidden');
+        } else {
+          item.setAttribute('hidden', '');
+        }
+      });
+    });
+  });
+</script>
