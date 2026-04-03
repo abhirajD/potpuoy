@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import WritingListItem from '../components/WritingListItem.astro';
+
+const allPieces = await getCollection('writing', ({ data }) => data.status !== 'draft');
+const recent = allPieces
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 7);
+---
+
+<Base title="potpuoy">
+  <section class="identity" aria-label="Site identity">
+    <p class="identity__statement">
+      A site about hidden structure — the mechanisms, tradeoffs, and patterns
+      that explain why things work the way they do.
+    </p>
+  </section>
+
+  <section aria-label="Recent writing">
+    <p class="section-label">Recent writing</p>
+    <ul class="writing-list" role="list">
+      {recent.map((piece) => (
+        <WritingListItem
+          title={piece.data.title}
+          slug={piece.id}
+          type={piece.data.type}
+          date={piece.data.date}
+          summary={piece.data.summary}
+          updated={piece.data.updated}
+        />
+      ))}
+    </ul>
+  </section>
+</Base>

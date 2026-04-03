@@ -1,0 +1,28 @@
+---
+interface Props {
+  title: string;
+  slug: string;
+  type: 'essay' | 'note' | 'synthesis';
+  date: Date;
+  summary: string;
+  updated?: Date;
+}
+
+const { title, slug, type, date, summary, updated } = Astro.props;
+
+const displayDate = updated
+  ? updated.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+  : date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+---
+
+<li class="writing-list__item">
+  <a href={`/writing/${slug}`} class="writing-list__title">{title}</a>
+  <div class="writing-list__meta">
+    <span class="writing-list__type">{type}</span>
+    <span class="writing-list__sep" aria-hidden="true">·</span>
+    <span class="writing-list__date">
+      <time datetime={date.toISOString().slice(0, 7)}>{displayDate}</time>
+    </span>
+  </div>
+  <p class="writing-list__summary">{summary}</p>
+</li>
