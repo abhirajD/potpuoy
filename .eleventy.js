@@ -61,7 +61,7 @@ export default async function (eleventyConfig) {
 
   // Shiki syntax highlighting (build-time, zero runtime cost)
   const highlighter = await createHighlighter({
-    themes: ["dark-plus"],
+    themes: ["github-light", "dark-plus"],
     langs: ["js", "jsx", "ts", "tsx", "html", "css", "json", "yaml", "python", "bash", "sh", "md", "diff", "sql", "text"],
   });
 
@@ -74,7 +74,13 @@ export default async function (eleventyConfig) {
         }
         const loaded = highlighter.getLoadedLanguages();
         const useLang = loaded.includes(lang) ? lang : "text";
-        return highlighter.codeToHtml(code, { lang: useLang, theme: "dark-plus" });
+        // Dual theme: emits --shiki-light / --shiki-dark custom properties so
+        // code blocks follow prefers-color-scheme instead of being locked dark.
+        return highlighter.codeToHtml(code, {
+          lang: useLang,
+          themes: { light: "github-light", dark: "dark-plus" },
+          defaultColor: false,
+        });
       },
     });
   });

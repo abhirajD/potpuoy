@@ -130,15 +130,25 @@ h1, h2, h3, h4 {
   margin-top: 0;
 }
 * + h1, * + h2, * + h3, * + h4 { margin-top: 2rem; }
-h1 { font-size: 1.35rem; }
-h2 { font-size: 1.05rem; }
-h3 { font-size: 0.95rem; }
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.2rem; }
+h3 { font-size: 1rem; }
+
+/* Site tagline — the homepage's typographic peak. Without a visible h1 the
+   landing page had no element above 1rem, so it read as uniformly flat. */
+.site-tagline {
+  font-size: 1.75rem;
+  line-height: 1.25;
+  margin: 0 0 1.25rem;
+  max-width: 20ch;
+}
 
 /* Lead and meta */
 .lead {
-  color: var(--muted);
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
+  color: var(--text);
+  font-size: 1.15rem;
+  margin: 0 0 0.75rem;
+  max-width: 58ch;
 }
 .byline {
   font-family: ui-monospace, "Cascadia Code", monospace;
@@ -149,13 +159,15 @@ h3 { font-size: 0.95rem; }
 
 /* Post list — unified mono heading + hover tint */
 .post-list {
-  role: list;
   display: flex;
   flex-direction: column;
 }
 
+/* Negative margin + matching padding so the hover tint has horizontal
+   breathing room while the text stays aligned to the prose column. */
 .post-item {
-  padding: 1.25rem 0;
+  padding: 1.25rem 0.85rem;
+  margin: 0 -0.85rem;
   border-top: 1px solid var(--border);
   background: transparent;
   transition: background 160ms ease;
@@ -168,10 +180,11 @@ h3 { font-size: 0.95rem; }
 }
 
 .post-item h2 {
-  font-family: ui-monospace, "Cascadia Code", monospace; /* P1 unify */
-  font-size: 1rem;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 1.2rem;
   font-weight: 600;
-  margin: 0 0 0.2rem;
+  line-height: 1.35;
+  margin: 0 0 0.3rem;
 }
 .post-item h2 a {
   color: var(--text);
@@ -220,6 +233,17 @@ h3 { font-size: 0.95rem; }
   font-size: inherit;
   color: inherit;
 }
+/* Tags link into the /writing filter — they looked clickable before but
+   were inert <span>s. */
+.tags a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.tags a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.tags a:visited { color: var(--muted); }
 
 /* Filters — tame readability */
 .filters {
@@ -300,7 +324,8 @@ h3 { font-size: 0.95rem; }
 }
 .post-header h1 {
   margin-top: 0;
-  font-size: 1.6rem; /* P1: stronger title scale */
+  font-size: 2rem;
+  line-height: 1.25;
 }
 
 /* Prose */
@@ -380,13 +405,27 @@ pre code {
   font-size: 0.85rem;
 }
 
-/* Shiki code blocks */
+/* Shiki code blocks — dual theme. Shiki emits both palettes as custom
+   properties (defaultColor: false), so light mode no longer gets a dark
+   block sitting next to light-background plain fences. */
 .shiki {
   padding: 1rem 1.25rem;
   overflow-x: auto;
   border-radius: 4px;
   font-size: 0.85rem;
   line-height: 1.6;
+}
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+}
+@media (prefers-color-scheme: dark) {
+  .shiki,
+  .shiki span {
+    color: var(--shiki-dark);
+    background-color: var(--shiki-dark-bg);
+  }
 }
 
 /* Mermaid — surface, not card */
@@ -412,15 +451,34 @@ iframe {
   margin: 1.5rem 0;
 }
 
+/* Site footer */
+footer {
+  margin-top: 4rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+footer p { margin: 0; }
+footer a { color: var(--muted); }
+footer a:hover { color: var(--accent); }
+footer a:visited { color: var(--muted); }
+
 /* Responsive */
 @media (max-width: 480px) {
   body { font-size: 1rem; padding: 1.25rem 1rem 3rem; }
-  h1 { font-size: 1.1rem; }
   nav { gap: 0 0.75rem; }
   nav .sep { display: none; }
   .filters select { font-size: 1rem; }
   .filters { flex-wrap: wrap; }
   header { margin-bottom: 2rem; }
-  .lead { margin-bottom: 2rem; }
-  .post-header h1 { font-size: 1.15rem; }
+  /* Scaled down but still a real hierarchy — the old rules flattened
+     every heading back to ~1.1rem, undoing the scale on mobile. */
+  h1 { font-size: 1.4rem; }
+  .site-tagline { font-size: 1.4rem; max-width: none; }
+  .lead { font-size: 1.05rem; }
+  .post-header h1 { font-size: 1.5rem; }
+  .post-item h2 { font-size: 1.1rem; }
+  .post-item { padding: 1.1rem 0.75rem; margin: 0 -0.75rem; }
 }

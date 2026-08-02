@@ -75,6 +75,16 @@
     {{ content | safe }}
   </main>
 
+  <footer>
+    <p>
+      <a href="/feed.xml">RSS</a>
+      <span aria-hidden="true"> · </span>
+      <a href="/writing/">Archive</a>
+      <span aria-hidden="true"> · </span>
+      <a href="https://github.com/abhirajD/potpuoy">Source</a>
+    </p>
+  </footer>
+
   {% if mermaid %}
   <script type="module">
     import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";

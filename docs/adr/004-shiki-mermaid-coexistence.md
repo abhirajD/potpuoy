@@ -23,11 +23,20 @@ eleventyConfig.amendLibrary("md", (md) => {
       }
       const loaded = highlighter.getLoadedLanguages();
       const useLang = loaded.includes(lang) ? lang : "text";
-      return highlighter.codeToHtml(code, { lang: useLang, theme: "dark-plus" });
+      return highlighter.codeToHtml(code, {
+        lang: useLang,
+        themes: { light: "github-light", dark: "dark-plus" },
+        defaultColor: false,
+      });
     },
   });
 });
 ```
+
+Shiki runs in dual-theme mode (`defaultColor: false`), emitting `--shiki-light`
+and `--shiki-dark` custom properties that `style.css` resolves per
+`prefers-color-scheme`. The mermaid bypass is unaffected — it returns before
+`codeToHtml` is reached.
 
 Mermaid's runtime script then finds and renders these elements normally.
 

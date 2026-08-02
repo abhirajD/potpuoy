@@ -78,4 +78,15 @@ permalink: /writing/
 
   typeSelect.addEventListener('change', refresh);
   tagSelect.addEventListener('change', refresh);
+
+  // Apply ?type= / ?tag= so tag links elsewhere on the site land pre-filtered.
+  // Values are matched against existing <option>s, so an unknown or crafted
+  // param is ignored rather than reflected.
+  const params = new URLSearchParams(window.location.search);
+  const hasOption = (sel, val) => [...sel.options].some((o) => o.value === val);
+  const wantType = params.get('type');
+  const wantTag = params.get('tag');
+  if (wantType && hasOption(typeSelect, wantType)) typeSelect.value = wantType;
+  if (wantTag && hasOption(tagSelect, wantTag)) tagSelect.value = wantTag;
+  refresh();
 </script>
