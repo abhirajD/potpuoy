@@ -42,11 +42,14 @@
 
 ### Infrastructure
 - [x] `.gitignore` — includes `.codex-*`, `public/`, `node_modules/`
-- [x] `netlify.toml` — `npm run build` → `public/`
+- [x] `netlify.toml` — `npm run build` → `public/`, Node 22 pinned
+- [x] Source committed and pushed — `github.com/abhirajD/potpuoy` (public, `main`)
 
 ## Open
 
-- [ ] Connect potpuoy.com domain to Netlify
+- [ ] Connect Netlify to the GitHub repo (needs Netlify account auth)
+- [ ] Point potpuoy.com at Netlify — DNS is at Cloudflare; records must be
+      **DNS only** (grey cloud), not proxied, or Netlify cannot issue its TLS cert
 - [ ] Accessibility audit findings — implement fixes (agent running)
 - [ ] Mobile review findings — implement fixes (agent running)
 - [ ] Reading flow — post-end navigation (next/prev or type-filtered suggestions)
