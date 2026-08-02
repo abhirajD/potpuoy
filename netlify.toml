@@ -1,3 +1,8 @@
 [build]
 publish = "public"
 command = "npm run build"
+
+[build.environment]
+# Pinned so a change to Netlify's default Node can't break the build.
+# Eleventy v3 requires Node 18+.
+NODE_VERSION = "22"
