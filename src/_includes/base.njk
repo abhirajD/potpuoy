@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  {%- set pageTitle %}{% if title and title != site.title %}{{ title }} — {{ site.title }}{% else %}{{ site.title }}{% endif %}{% endset -%}
+  {%- set pageDescription = summary or description or site.description -%}
+  {%- set pageUrl = site.url + page.url -%}
+  {%- set isPost = type and date -%}
+
+  <title>{{ pageTitle }}</title>
+  <meta name="description" content="{{ pageDescription }}" />
+  <link rel="canonical" href="{{ pageUrl }}" />
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="{{ site.title }}" />
+  <meta property="og:title" content="{{ pageTitle }}" />
+  <meta property="og:description" content="{{ pageDescription }}" />
+  <meta property="og:url" content="{{ pageUrl }}" />
+  <meta property="og:type" content="{% if isPost %}article{% else %}website{% endif %}" />
+  {% if isPost %}
+  <meta property="article:published_time" content="{{ date | htmlDateString }}" />
+  <meta property="article:author" content="{{ site.author }}" />
+  {% endif %}
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="{{ pageTitle }}" />
+  <meta name="twitter:description" content="{{ pageDescription }}" />
+
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="/feed.xml" />
+
+  {% if isPost %}
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": {{ title | dump | safe }},
+    "description": {{ pageDescription | dump | safe }},
+    "datePublished": "{{ date | machineDate }}",
+    "author": {
+      "@type": "Person",
+      "name": {{ site.author | dump | safe }}
+    },
+    "url": {{ pageUrl | dump | safe }},
+    "publisher": {
+      "@type": "Person",
+      "name": {{ site.author | dump | safe }}
+    }
+  }
+  </script>
+  {% endif %}
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <header>
+    {%- set currentUrl = page.url or '' -%}
+    <nav aria-label="Main navigation">
+      <a href="/" {% if currentUrl == '/' %}aria-current="page"{% endif %}>{{ site.title }}</a>
+      <span class="sep" aria-hidden="true"> · </span>
+      <a href="/writing/" {% if currentUrl == '/writing/' or ('/posts/' in currentUrl) %}aria-current="page"{% endif %}>Writing</a>
+      <span class="sep" aria-hidden="true"> · </span>
+      <a href="/artifacts/" {% if '/artifacts/' in currentUrl %}aria-current="page"{% endif %}>Artifacts</a>
+      <span class="sep" aria-hidden="true"> · </span>
+      <a href="/about/" {% if currentUrl == '/about/' %}aria-current="page"{% endif %}>About</a>
+      <span class="sep" aria-hidden="true"> · </span>
+      <a href="/now/" {% if currentUrl == '/now/' %}aria-current="page"{% endif %}>Now</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    {{ content | safe }}
+  </main>
+
+  {% if mermaid %}
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    // startOnLoad: false so we can await and then add SVG accessibility attributes
+    mermaid.initialize({ startOnLoad: false, theme: dark ? "dark" : "default" });
+    await mermaid.run();
+    // Add role="img" and <title> to each rendered Mermaid SVG for screen readers
+    document.querySelectorAll('.mermaid svg').forEach((svg, i) => {
+      if (!svg.getAttribute('role')) svg.setAttribute('role', 'img');
+      if (!svg.querySelector('title')) {
+        const t = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+        // Use the diagram's sibling figcaption or a generic label
+        const fig = svg.closest('figure');
+        const caption = fig && fig.querySelector('figcaption');
+        t.textContent = caption ? caption.textContent.trim() : 'Diagram ' + (i + 1);
+        svg.prepend(t);
+        svg.setAttribute('aria-labelledby', t.id || (t.id = 'mermaid-title-' + i));
+      }
+    });
+  </script>
+  {% endif %}
+</body>
+</html>

@@ -1,0 +1,21 @@
+---
+permalink: /feed.xml
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ site.title | escape }}</title>
+  <link href="{{ site.url }}/feed.xml" rel="self" />
+  <link href="{{ site.url }}/" />
+  <updated>{% if collections.rssFeed.length %}{{ collections.rssFeed[0].date | htmlDateString }}{% else %}{{ site.date | htmlDateString }}{% endif %}</updated>
+  <author><name>{{ site.author | escape }}</name></author>
+  <id>{{ site.url }}/</id>
+  {% for post in collections.rssFeed %}
+    <entry>
+      <title>{{ post.data.title | escape }}</title>
+      <link href="{{ site.url }}{{ post.url }}" />
+      <updated>{{ post.date | htmlDateString }}</updated>
+      <id>{{ site.url }}{{ post.url }}</id>
+      {% if post.data.summary %}<summary>{{ post.data.summary | escape }}</summary>{% endif %}
+    </entry>
+  {% endfor %}
+</feed>

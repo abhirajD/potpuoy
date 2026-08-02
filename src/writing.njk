@@ -1,0 +1,81 @@
+---
+title: Writing
+layout: base.njk
+permalink: /writing/
+---
+
+<h1>Writing</h1>
+<p>All posts, reverse chronological.</p>
+
+<div class="filters">
+  <label>type: <select id="typeFilter">
+    <option value="">all</option>
+    <option value="note">note</option>
+    <option value="mechanism">mechanism</option>
+    <option value="build-log">build-log</option>
+    <option value="model">model</option>
+    <option value="interactive">interactive</option>
+  </select></label>
+  <label>tag: <select id="tagFilter">
+    <option value="">all</option>
+  </select></label>
+</div>
+
+{% set posts = collections.posts %}
+<p class="sr-only" id="filterStatus" aria-live="polite" aria-atomic="true"></p>
+
+<div id="writingList">
+  {% if posts.length %}
+    {% include "post-list.njk" %}
+  {% else %}
+    <p class="empty">No posts yet.</p>
+  {% endif %}
+</div>
+
+<script>
+  const list = document.getElementById('writingList');
+  const items = list ? list.querySelectorAll('.post-item') : [];
+  const typeSelect = document.getElementById('typeFilter');
+  const tagSelect = document.getElementById('tagFilter');
+
+  const tagCounts = new Map();
+  items.forEach((item) => {
+    (item.getAttribute('data-tags') || '').split(',').filter(Boolean).forEach((tag) => {
+      tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+    });
+  });
+
+  [...tagCounts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .forEach(([tag]) => {
+      const opt = document.createElement('option');
+      opt.value = tag;
+      opt.textContent = '#' + tag;
+      tagSelect.appendChild(opt);
+    });
+
+  const filterStatus = document.getElementById('filterStatus');
+
+  function refresh() {
+    const type = typeSelect.value;
+    const tag = tagSelect.value;
+    let visible = 0;
+    items.forEach((item) => {
+      const typeOk = !type || item.getAttribute('data-type') === type;
+      const tags = (item.getAttribute('data-tags') || '').split(',').filter(Boolean);
+      const tagOk = !tag || tags.includes(tag);
+      const show = typeOk && tagOk;
+      item.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    // Announce result count to screen readers via the live region
+    if (filterStatus) {
+      filterStatus.textContent = visible === items.length
+        ? 'Showing all ' + visible + ' posts'
+        : 'Showing ' + visible + ' of ' + items.length + ' posts';
+    }
+  }
+
+  typeSelect.addEventListener('change', refresh);
+  tagSelect.addEventListener('change', refresh);
+</script>

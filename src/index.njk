@@ -1,0 +1,16 @@
+---
+title: potpuoy.com
+layout: base.njk
+permalink: /
+---
+
+<h1 class="sr-only">{{ site.title }}</h1>
+<p class="lead">I learn the underlying mechanics of things — minds, machines, markets, tools, materials — and turn that understanding into useful artifacts. This is the lab notebook: mechanisms observed, models compressed, artifacts made.</p>
+<p class="byline">{{ site.author }}</p>
+
+{% set posts = collections.posts | limit(10) %}
+{% if posts.length %}
+  {% include "post-list.njk" %}
+{% else %}
+  <p class="empty">No posts yet. Add Markdown files in <code>src/posts/</code>.</p>
+{% endif %}

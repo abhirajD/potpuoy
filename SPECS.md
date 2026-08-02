@@ -154,32 +154,60 @@ No React. No Next.js. No Tailwind. No build bundler beyond Eleventy itself.
 
 ```
 ad_blog/
+├── AGENTS.md                     ← canonical agent instructions (read first)
+├── CLAUDE.md                     ← Claude Code entrypoint → redirects to AGENTS.md
+├── SPECS.md                      ← product and stack contract
+├── PROGRESS.md                   ← implementation status
+├── persona_library.md            ← reviewer and agent persona definitions
+├── .claudeignore
+├── .claude/
+│   └── settings.json
+├── .github/
+│   └── copilot-instructions.md
+├── docs/
+│   ├── adr/
+│   │   ├── template.md
+│   │   ├── 001-asset-structure.md
+│   │   ├── 002-layout-split.md
+│   │   ├── 003-conditional-mermaid.md
+│   │   └── 004-shiki-mermaid-coexistence.md
+│   └── tasks/
+│       └── active/
+│           └── scaffold-and-local-build.md
+├── package.json
+├── package-lock.json
+├── .eleventy.js                  ← async; Shiki, RSS, collections, filters
+├── .gitignore
+├── netlify.toml
 ├── src/
-│   ├── posts/                    ← all content (YYYYMMDD-slug.md)
+│   ├── _data/
+│   │   └── site.json             ← global site metadata
 │   ├── _includes/
-│   │   ├── base.njk              ← root HTML shell, nav, head
-│   │   └── post.njk              ← individual post layout
-│   ├── assets/
-│   │   ├── images/               ← photos, screenshots
-│   │   ├── diagrams/             ← SVG, Excalidraw exports
-│   │   ├── plots/                ← Python-generated SVG/PNG charts
-│   │   └── data/                 ← CSV, JSON source data
+│   │   ├── base.njk              ← root shell: nav, head, OG/Twitter meta, Mermaid (conditional)
+│   │   ├── page.njk              ← static page layout (about, now): adds .prose wrapper
+│   │   ├── post.njk              ← post layout: header, meta, summary, tags, prose section
+│   │   └── post-list.njk         ← shared post listing partial
+│   ├── assets/                   ← shared reusable assets
+│   │   ├── images/
+│   │   ├── diagrams/
+│   │   ├── plots/
+│   │   └── data/
 │   ├── demos/                    ← standalone HTML interactive tools
+│   ├── posts/                    ← all content + post-local assets
+│   │   ├── posts.11tydata.json   ← sets layout: post.njk for all posts automatically
+│   │   └── YYYYMMDD-short-slug/ ← optional post-local asset folder (images, diagrams)
 │   ├── style.css
-│   ├── index.njk                 ← home page
-│   ├── writing.njk               ← all posts listing
-│   ├── artifacts.njk             ← filtered artifacts view
+│   ├── index.njk
+│   ├── writing.njk
+│   ├── artifacts.njk
+│   ├── feed.njk
+│   ├── sitemap.njk
 │   ├── about.md
 │   └── now.md
+├── notebooks/                    ← Jupyter / Quarto sources
 ├── scripts/
 │   └── plots/                    ← Python scripts → src/assets/plots/
-├── notebooks/                    ← Jupyter / Quarto source files
-├── public/                       ← Eleventy build output (gitignored)
-├── .eleventy.js
-├── package.json
-├── .gitignore
-├── netlify.toml                  ← build config
-└── SPECS.md                      ← this file
+└── public/                       ← Eleventy build output (gitignored)
 ```
 
 ---
@@ -226,13 +254,14 @@ Demos are standalone — they can use any JS internally without affecting the re
 ## 8. Eleventy Configuration (`.eleventy.js`)
 
 Key behaviors:
+- Async export (required for Shiki `createHighlighter`)
 - Input: `src/`, output: `public/`
-- Collections: `post` (all), `artifact` (type: build-log | model | interactive), `note` (type: note)
-- Filters: `humanDate`, `machineDate`, `filterByType`, `filterByTag`
-- Passthrough: `src/style.css`, `src/assets/**`, `src/demos/**`
-- Plugins: RSS, IdAttribute, InputPathToUrl
-- Shiki highlighting: `dark-plus` theme
-- Mermaid: `<script>` injected in base template
+- Collections: `posts` (all, reversed, drafts excluded), `artifacts` (build-log | model | interactive), `rssFeed` (last 20)
+- Filters: `humanDate`, `machineDate`, `htmlDateString`, `filterByType`, `filterByTag`, `limit`
+- Passthrough: `src/style.css`, `src/assets/**`, `src/demos/**`, `src/posts/**/*.{jpg,jpeg,png,gif,svg,webp,avif,mp4,webm,pdf}`
+- Plugins: `EleventyHtmlBasePlugin`, `eleventy-plugin-rss`
+- Shiki: build-time, `dark-plus` theme; mermaid fences bypass Shiki and output `<pre class="mermaid">`
+- Mermaid: conditional — only loaded on pages with `mermaid: true` in frontmatter (see ADR-003)
 
 ---
 

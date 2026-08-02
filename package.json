@@ -1,0 +1,16 @@
+{
+  "name": "potpuoy",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "potpuoy.com — systems craftsman public lab notebook",
+  "scripts": {
+    "build": "eleventy",
+    "dev": "eleventy --serve",
+    "check": "eleventy --dryrun"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "3.x",
+    "shiki": "3.x",
+    "@11ty/eleventy-plugin-rss": "2.x"
+  }
+}

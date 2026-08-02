@@ -1,0 +1,7 @@
+node_modules/
+public/
+.eleventy-cache/
+.cache/
+.DS_Store
+*.log
+.codex-*

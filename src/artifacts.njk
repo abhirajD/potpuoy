@@ -1,0 +1,15 @@
+---
+title: Artifacts
+layout: base.njk
+permalink: /artifacts/
+---
+
+<h1>Artifacts</h1>
+<p>Build logs, models, and interactive tools.</p>
+
+{% set posts = collections.artifacts %}
+{% if posts.length %}
+  {% include "post-list.njk" %}
+{% else %}
+  <p class="empty">No artifacts yet.</p>
+{% endif %}
