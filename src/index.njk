@@ -8,9 +8,28 @@ permalink: /
 <p class="lead">I learn the underlying mechanics of things — minds, machines, markets, tools, materials — and turn that understanding into useful artifacts. This is the lab notebook: mechanisms observed, models compressed, artifacts made.</p>
 <p class="byline">{{ site.author }}</p>
 
-{% set posts = collections.posts | limit(10) %}
-{% if posts.length %}
-  {% include "post-list.njk" %}
+{% if collections.posts.length %}
+
+  {% set groupName = "Observations" %}
+  {% set groupGloss = "what I noticed" %}
+  {% set groupUrl = "/writing/?type=note" %}
+  {% set groupPosts = collections.observations %}
+  {% include "post-group.njk" %}
+
+  {% set groupName = "Mechanisms" %}
+  {% set groupGloss = "how it works underneath" %}
+  {% set groupUrl = "/writing/?type=mechanism" %}
+  {% set groupPosts = collections.mechanisms %}
+  {% include "post-group.njk" %}
+
+  {% set groupName = "Artifacts" %}
+  {% set groupGloss = "what I built" %}
+  {% set groupUrl = "/artifacts/" %}
+  {% set groupPosts = collections.artifacts %}
+  {% include "post-group.njk" %}
+
+  <p class="stage-all"><a href="/writing/">Everything, newest first <span aria-hidden="true">→</span></a></p>
+
 {% else %}
   <p class="empty">No posts yet. Add Markdown files in <code>src/posts/</code>.</p>
 {% endif %}

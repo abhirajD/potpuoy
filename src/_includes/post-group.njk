@@ -1,0 +1,30 @@
+{# Expects: groupName, groupGloss, groupUrl, groupPosts (reverse-chronological).
+   Caps at 3 so an uneven distribution still renders evenly — see the count
+   for the real total. #}
+<section class="stage">
+  <h2 class="stage-bar">
+    <a class="stage-name" href="{{ groupUrl }}">{{ groupName }}</a>
+    <span class="stage-count">{{ groupPosts.length }}</span>
+    <span class="stage-rule" aria-hidden="true"></span>
+    <span class="stage-gloss">{{ groupGloss }}</span>
+  </h2>
+
+  {% if groupPosts.length %}
+    {% for post in groupPosts | limit(3) %}
+      <article class="entry">
+        <h3 class="entry-title"><a href="{{ post.url }}">{{ post.data.title }}</a></h3>
+        <p class="entry-sub">
+          {% if post.data.summary %}{{ post.data.summary }}{% endif %}
+          <span class="entry-date">— {{ post.date | shortDate }}</span>
+        </p>
+      </article>
+    {% endfor %}
+    {% if groupPosts.length > 3 %}
+      <p class="stage-more">
+        <a href="{{ groupUrl }}">all {{ groupPosts.length }} {{ groupName | lower }} <span aria-hidden="true">→</span></a>
+      </p>
+    {% endif %}
+  {% else %}
+    <p class="stage-empty">Nothing here yet.</p>
+  {% endif %}
+</section>

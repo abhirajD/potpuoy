@@ -197,6 +197,88 @@ h3 { font-size: 1rem; }
   opacity: 1;
 }
 
+/* Homepage groups — observations / mechanisms / artifacts */
+.stage { margin-bottom: 2.5rem; }
+
+.stage-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 1rem;
+  font-size: 0.8rem;
+}
+* + .stage-bar { margin-top: 0; }
+
+.stage-name {
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.stage-name:hover { text-decoration: underline; text-underline-offset: 3px; }
+.stage-name:visited { color: var(--accent); }
+
+.stage-count {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.stage-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.stage-gloss {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.entry { margin-bottom: 1.25rem; }
+.entry:last-of-type { margin-bottom: 0; }
+
+.entry-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0 0 0.15rem;
+}
+.entry-title a { color: var(--text); }
+.entry-title a:hover { color: var(--accent); text-decoration: none; }
+.entry-title a:visited { color: var(--text); }
+
+.entry-sub {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin: 0;
+  max-width: 62ch;
+}
+.entry-date {
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.stage-more,
+.stage-empty,
+.stage-all {
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0.9rem 0 0;
+}
+.stage-all {
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
 /* Meta */
 .meta {
   font-family: ui-monospace, "Cascadia Code", monospace;

@@ -21,27 +21,25 @@ layout: base.njk
   </section>
 </article>
 
-{% set prevPost = null %}
-{% set nextPost = null %}
-{% for post in collections.posts %}
-  {% if post.url == page.url %}
-    {% if not loop.last %}
-      {% set prevPost = collections.posts[loop.index0 + 1] %}
-    {% endif %}
-    {% if loop.index0 > 0 %}
-      {% set nextPost = collections.posts[loop.index0 - 1] %}
-    {% endif %}
-  {% endif %}
-{% endfor %}
+{# Neighbours within the same type — after a mechanism you most likely want
+   another mechanism, not whatever happened to be published the day before.
+   Falls back to publication order when a post is the only one of its type. #}
+{% set sameType = collections.posts | filterByType(type) %}
+{% set near = sameType | neighbours(page.url) %}
+{% set scoped = true %}
+{% if not near.prev and not near.next %}
+  {% set near = collections.posts | neighbours(page.url) %}
+  {% set scoped = false %}
+{% endif %}
 
 <footer class="post-footer">
-  {% if prevPost or nextPost %}
-  <nav class="post-nav" aria-label="Post navigation">
-    {% if prevPost %}
-      <a href="{{ prevPost.url }}" class="post-nav-prev"><span aria-hidden="true">← </span>{{ prevPost.data.title }}</a>
+  {% if near.prev or near.next %}
+  <nav class="post-nav" aria-label="{% if scoped %}More {{ type }} posts{% else %}Post navigation{% endif %}">
+    {% if near.prev %}
+      <a href="{{ near.prev.url }}" class="post-nav-prev"><span aria-hidden="true">← </span>{{ near.prev.data.title }}</a>
     {% endif %}
-    {% if nextPost %}
-      <a href="{{ nextPost.url }}" class="post-nav-next">{{ nextPost.data.title }}<span aria-hidden="true"> →</span></a>
+    {% if near.next %}
+      <a href="{{ near.next.url }}" class="post-nav-next">{{ near.next.data.title }}<span aria-hidden="true"> →</span></a>
     {% endif %}
   </nav>
   {% endif %}

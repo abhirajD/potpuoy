@@ -53,24 +53,28 @@ export default async function (eleventyConfig) {
 
   // Collections — all reverse-chronological, drafts excluded.
   // Drafts skip validation so work in progress can be incomplete.
+  const published = (api) =>
+    api.getFilteredByGlob("src/posts/**/*.md").filter((p) => !p.data.draft);
+
+  const ofType = (api, ...types) =>
+    published(api).filter((p) => types.includes(p.data.type)).reverse();
+
   eleventyConfig.addCollection("posts", (api) => {
-    const posts = api.getFilteredByGlob("src/posts/**/*.md").filter((p) => !p.data.draft);
+    const posts = published(api);
     validatePosts(posts);
     return posts.reverse();
   });
 
+  // Homepage groups — the observe / model / artifact frame from AGENTS.md.
+  // Named as kinds, not stages: grouping implies nothing about whether the
+  // items relate to one another.
+  eleventyConfig.addCollection("observations", (api) => ofType(api, "note"));
+  eleventyConfig.addCollection("mechanisms", (api) => ofType(api, "mechanism"));
   eleventyConfig.addCollection("artifacts", (api) =>
-    api.getFilteredByGlob("src/posts/**/*.md")
-      .filter((p) => !p.data.draft && ["build-log", "model", "interactive"].includes(p.data.type))
-      .reverse()
+    ofType(api, "build-log", "model", "interactive")
   );
 
-  eleventyConfig.addCollection("rssFeed", (api) =>
-    api.getFilteredByGlob("src/posts/**/*.md")
-      .filter((p) => !p.data.draft)
-      .reverse()
-      .slice(0, 20)
-  );
+  eleventyConfig.addCollection("rssFeed", (api) => published(api).reverse().slice(0, 20));
 
   // Filters
   eleventyConfig.addFilter("humanDate", (date) =>
@@ -96,6 +100,23 @@ export default async function (eleventyConfig) {
   );
 
   eleventyConfig.addFilter("limit", (arr, n) => arr.slice(0, n));
+
+  eleventyConfig.addFilter("shortDate", (date) =>
+    new Date(date).toLocaleDateString("en-US", {
+      month: "short", day: "numeric", timeZone: "UTC",
+    })
+  );
+
+  // Neighbours within an already-ordered (reverse-chronological) list, so
+  // prev/next can be scoped to a single type rather than to publication order.
+  eleventyConfig.addFilter("neighbours", (posts, url) => {
+    const i = posts.findIndex((p) => p.url === url);
+    if (i === -1) return { prev: null, next: null };
+    return {
+      prev: posts[i + 1] || null, // older
+      next: posts[i - 1] || null, // newer
+    };
+  });
 
   // Passthrough
   eleventyConfig.addPassthroughCopy({ "src/style.css": "/style.css" });
