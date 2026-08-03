@@ -28,7 +28,15 @@ permalink: /
   {% set groupPosts = collections.artifacts %}
   {% include "post-group.njk" %}
 
-  <p class="stage-all"><a href="/writing/">Everything, newest first <span aria-hidden="true">→</span></a></p>
+  <div class="deeper">
+    {% if collections.topics.length %}
+      <p class="topics">
+        <span class="topics-label">Topics</span>
+        {% for t in collections.topics %}<a href="/writing/?tag={{ t.tag }}">{{ t.tag }}<span class="topics-count">{{ t.count }}</span></a>{% if not loop.last %}<span class="sep" aria-hidden="true"> · </span>{% endif %}{% endfor %}
+      </p>
+    {% endif %}
+    <p class="stage-all"><a href="/writing/">Everything, newest first <span aria-hidden="true">→</span></a></p>
+  </div>
 
 {% else %}
   <p class="empty">No posts yet. Add Markdown files in <code>src/posts/</code>.</p>

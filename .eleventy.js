@@ -76,6 +76,20 @@ export default async function (eleventyConfig) {
 
   eleventyConfig.addCollection("rssFeed", (api) => published(api).reverse().slice(0, 20));
 
+  // Domain tags actually in use, with counts — the homepage is organised by
+  // kind and would otherwise say nothing about subject.
+  eleventyConfig.addCollection("topics", (api) => {
+    const counts = new Map();
+    for (const post of published(api)) {
+      for (const tag of post.data.tags || []) {
+        counts.set(tag, (counts.get(tag) || 0) + 1);
+      }
+    }
+    return [...counts.entries()]
+      .map(([tag, count]) => ({ tag, count }))
+      .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
+  });
+
   // Filters
   eleventyConfig.addFilter("humanDate", (date) =>
     new Date(date).toLocaleDateString("en-US", {

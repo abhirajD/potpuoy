@@ -61,9 +61,10 @@
     <nav aria-label="Main navigation">
       <a href="/" {% if currentUrl == '/' %}aria-current="page"{% endif %}>{{ site.title }}</a>
       <span class="sep" aria-hidden="true"> · </span>
-      <a href="/writing/" {% if currentUrl == '/writing/' or ('/posts/' in currentUrl) %}aria-current="page"{% endif %}>Writing</a>
-      <span class="sep" aria-hidden="true"> · </span>
-      <a href="/artifacts/" {% if '/artifacts/' in currentUrl %}aria-current="page"{% endif %}>Artifacts</a>
+      {# /artifacts/ is reached from the homepage group header, not the nav —
+         it is one bucket of the kind axis, not an axis of its own. Writing
+         stays current there, since artifacts are a subset of it. #}
+      <a href="/writing/" {% if currentUrl == '/writing/' or ('/posts/' in currentUrl) or ('/artifacts/' in currentUrl) %}aria-current="page"{% endif %}>Writing</a>
       <span class="sep" aria-hidden="true"> · </span>
       <a href="/about/" {% if currentUrl == '/about/' %}aria-current="page"{% endif %}>About</a>
       <span class="sep" aria-hidden="true"> · </span>
