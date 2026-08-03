@@ -11,7 +11,7 @@ layout: base.njk
     {% if summary %}<p class="summary">{{ summary }}</p>{% endif %}
     {% if tags and tags.length %}
       <p class="tags">
-        {% for tag in tags %}<span>#{{ tag }}</span>{% if not loop.last %} {% endif %}{% endfor %}
+        {% for tag in tags %}<a href="/writing/?tag={{ tag }}">#{{ tag }}</a>{% if not loop.last %} {% endif %}{% endfor %}
       </p>
     {% endif %}
   </header>
