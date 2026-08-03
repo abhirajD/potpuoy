@@ -2,7 +2,7 @@
 title: "On mechanism-first writing"
 date: 2026-06-28
 type: note
-tags: [systems, mechanism]
+tags: [systems, craft]
 summary: "Most writing explains what. This blog tries to explain how — the hidden structure that determines whether a thing works, breaks, or fails to generalize."
 draft: false
 ---

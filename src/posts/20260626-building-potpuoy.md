@@ -2,7 +2,7 @@
 title: "Building this site: Eleventy and the discipline of not over-engineering"
 date: 2026-06-26
 type: build-log
-tags: [craft, software, tool]
+tags: [craft, software, tools]
 summary: "Notes on the decisions that kept potpuoy.com simple — and the temptations that were worth resisting."
 draft: false
 ---

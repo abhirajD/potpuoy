@@ -2,7 +2,7 @@
 title: "Anatomy of a useful model"
 date: 2026-06-27
 type: mechanism
-tags: [model, systems, cognition]
+tags: [systems, cognition]
 summary: "What makes a model useful is not accuracy — it is the quality of the distinctions it draws and the honesty about where those distinctions break down."
 mermaid: true
 draft: false

@@ -105,11 +105,25 @@ draft: false        # true = excluded from build
 
 ### Tag Taxonomy
 
-**Domain tags:** `ai` · `cognition` · `markets` · `finance` · `craft` · `food` · `systems` · `tools` · `macro` · `software`
+**Tags are domain callouts only — what a post is *about*.** Form is carried by
+`type`, never by a tag.
 
-**Method tags:** `mechanism` · `synthesis` · `model` · `field-note` · `artifact`
+`ai` · `cognition` · `markets` · `finance` · `craft` · `food` · `systems` · `tools` · `macro` · `software`
 
-Tags are lowercase. Use 2–4 per post. Method + domain (e.g., `mechanism` + `ai`).
+Tags are lowercase. Use 2–4 per post, all from the list above.
+
+An earlier version of this spec also defined "method tags" (`mechanism`,
+`synthesis`, `model`, `field-note`, `artifact`). That was removed: `mechanism`
+and `model` are *also* content types, so the same word classified along two
+axes. In practice a `note` ended up tagged `mechanism` and a `mechanism` tagged
+`model`, and on `/writing` selecting `type: mechanism` plus `tag: mechanism`
+returned nothing at all.
+
+This vocabulary is enforced at build time by `validatePosts()` in
+`.eleventy.js` — an unknown tag, an unknown `type`, a missing `summary`, or a
+tag count outside 2–4 fails the build. Drafts are exempt. Extending the
+vocabulary means editing `DOMAIN_TAGS`, which keeps this list and the code from
+drifting apart.
 
 ### Post filename convention
 ```
